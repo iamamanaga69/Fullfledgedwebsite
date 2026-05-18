@@ -1,0 +1,42 @@
+{
+  "name": "NovaCart - Fast Premium Shopping",
+  "short_name": "NovaCart",
+  "description": "A fast, minimal and premium e-commerce shopping app.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f8faff",
+  "theme_color": "#0a0a2e",
+  "categories": ["shopping", "lifestyle", "productivity"],
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Shop",
+      "short_name": "Shop",
+      "description": "Open the NovaCart shop.",
+      "url": "./index.html#shop",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Deals",
+      "short_name": "Deals",
+      "description": "Open today's NovaCart deals.",
+      "url": "./index.html#deals",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}

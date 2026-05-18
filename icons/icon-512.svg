@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="NovaCart app icon">
+  <defs>
+    <linearGradient id="novaGradient512" x1="58" y1="48" x2="454" y2="464" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7c3aed"/>
+      <stop offset="1" stop-color="#f59e0b"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="116" fill="#0a0a2e"/>
+  <rect x="58" y="58" width="396" height="396" rx="96" fill="url(#novaGradient512)"/>
+  <path d="M148 344V168h48l118 112V168h50v176h-43L198 226v118h-50Z" fill="#fff"/>
+  <circle cx="354" cy="344" r="22" fill="#fff"/>
+</svg>

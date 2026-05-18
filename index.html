@@ -4,6 +4,14 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>NovaCart | Fast Premium Shopping</title>
+    <!-- These tags make NovaCart installable like an app on mobile and desktop. -->
+    <meta name="theme-color" content="#0a0a2e" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="NovaCart" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <link rel="manifest" href="manifest.json" />
+    <link rel="icon" href="icons/icon-192.png" type="image/png" />
+    <link rel="apple-touch-icon" href="icons/icon-192.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
@@ -188,6 +196,11 @@
         display: flex;
         align-items: center;
         gap: 0.55rem;
+      }
+
+      .install-button {
+        min-height: 44px;
+        white-space: nowrap;
       }
 
       .icon-button,
@@ -2231,6 +2244,7 @@
           🛒
           <span class="badge" id="cartCount">0</span>
         </button>
+        <button class="mini-button install-button" data-install-app type="button">Install App</button>
         <button class="hamburger" id="hamburger" type="button" aria-label="Open mobile menu"><span></span></button>
       </div>
     </header>
@@ -2246,6 +2260,7 @@
             <div class="hero-actions">
               <a class="button" href="#shop">Shop Now</a>
               <a class="ghost-button" href="#deals">Today's Deals</a>
+              <button class="ghost-button" data-install-app type="button">Install NovaCart App</button>
             </div>
           </div>
 
@@ -2752,6 +2767,7 @@
       const wheelRewards = ["5% off", "10% off", "Free Shipping", "15% off", "₹100 off", "20% off", "25% off", "Try Again"];
       const scratchRewards = ["Try Again", "10% Discount", "Free Delivery"];
       const categoryList = ["All", "Electronics", "Home & Kitchen", "Lifestyle", "Fashion", "Books"];
+      let deferredInstallPrompt = null;
 
       function saveSession() {
         sessionStorage.setItem("novaCart", JSON.stringify(state.cart));
@@ -2890,6 +2906,47 @@
           ripple.style.top = `${event.clientY - rect.top}px`;
           button.appendChild(ripple);
           setTimeout(() => ripple.remove(), 600);
+        });
+      }
+
+      function initPwaApp() {
+        // This registers the service worker, which lets NovaCart open faster and show an offline page.
+        if ("serviceWorker" in navigator) {
+          navigator.serviceWorker.register("service-worker.js").catch(() => {
+            console.warn("NovaCart service worker could not be registered.");
+          });
+        }
+
+        // Browsers fire this when NovaCart is ready to be installed as an app.
+        window.addEventListener("beforeinstallprompt", (event) => {
+          event.preventDefault();
+          deferredInstallPrompt = event;
+          $("[data-install-app]")?.removeAttribute("disabled");
+        });
+
+        // Every install button uses the same logic. If the browser cannot show a prompt, we show friendly instructions.
+        $$("[data-install-app]").forEach((button) => {
+          button.addEventListener("click", async () => {
+            if (window.matchMedia("(display-mode: standalone)").matches) {
+              showToast("NovaCart is already installed ✓");
+              return;
+            }
+
+            if (!deferredInstallPrompt) {
+              showToast("Use your browser menu and choose Add to Home Screen.");
+              return;
+            }
+
+            deferredInstallPrompt.prompt();
+            const choice = await deferredInstallPrompt.userChoice;
+            if (choice.outcome === "accepted") showToast("NovaCart app installed ✓");
+            deferredInstallPrompt = null;
+          });
+        });
+
+        window.addEventListener("appinstalled", () => {
+          showToast("NovaCart app installed ✓");
+          confetti(36);
         });
       }
 
@@ -3582,6 +3639,7 @@
 
       function initApp() {
         initLoader();
+        initPwaApp();
         initHeader();
         initTypewriter();
         initButtons();
